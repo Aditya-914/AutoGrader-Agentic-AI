@@ -1,0 +1,295 @@
+{
+  "submission": "maze.c",
+  "rules_hash": "sha256:e1e623e92b869db4e7eb6c1b64ee8c4ec3b27b60b489def811140b7732958db7",
+  "grade": 95.5,
+  "first_pass": {
+    "compiled": true,
+    "smoke_ok": true,
+    "suspected_infinite_loop": false,
+    "static_sanity_ok": true,
+    "static_sanity_details": {
+      "has_main": true,
+      "has_reader": true,
+      "has_writer": true,
+      "has_return_in_main": true
+    },
+    "compile_warnings": [],
+    "smoke_stdout": "DDRDRR DRDDRR"
+  },
+  "metrics": [
+    {
+      "name": "correctness",
+      "analyzer": "io_tests",
+      "score": 1.0,
+      "weight": 0.3,
+      "contribution": 30.0,
+      "evidence": {
+        "generated_by_llm": true,
+        "tests_passed": 10,
+        "tests_total": 10,
+        "failing": []
+      },
+      "feedback": "All 10/10 tests pass."
+    },
+    {
+      "name": "syntax",
+      "analyzer": "compiler_warnings",
+      "score": 1.0,
+      "weight": 0.15,
+      "contribution": 15.0,
+      "evidence": {
+        "warning_count": 0,
+        "warnings": []
+      },
+      "feedback": "Clean compile with 0 warnings."
+    },
+    {
+      "name": "structure",
+      "analyzer": "static_analysis",
+      "score": 1.0,
+      "weight": 0.1,
+      "contribution": 10.0,
+      "evidence": {
+        "functions": [
+          {
+            "name": "isValid",
+            "cyclomatic_complexity": 5,
+            "nloc": 4
+          },
+          {
+            "name": "solve",
+            "cyclomatic_complexity": 5,
+            "nloc": 22
+          },
+          {
+            "name": "findPath",
+            "cyclomatic_complexity": 5,
+            "nloc": 17
+          },
+          {
+            "name": "main",
+            "cyclomatic_complexity": 3,
+            "nloc": 12
+          }
+        ],
+        "cppcheck_issues": [],
+        "has_prototypes": false
+      },
+      "feedback": "Good static structure and low cyclomatic complexity."
+    },
+    {
+      "name": "modularity",
+      "analyzer": "function_split",
+      "score": 1.0,
+      "weight": 0.1,
+      "contribution": 10.0,
+      "evidence": {
+        "functions_defined": 4,
+        "function_names": [
+          "isValid",
+          "solve",
+          "findPath",
+          "main"
+        ],
+        "expected_min": 2
+      },
+      "feedback": "Modularity requirement met (4 functions defined: isValid, solve, findPath, main)."
+    },
+    {
+      "name": "logical",
+      "analyzer": "edge_case_runner",
+      "score": 1.0,
+      "weight": 0.1,
+      "contribution": 10.0,
+      "evidence": {
+        "generated_by_llm": true,
+        "student_defense_loop_active": true,
+        "cases_tested": 5,
+        "cases_passed": 5,
+        "defended_against_llm": [
+          {
+            "category": "start_blocked",
+            "input": "3 3\n0 1 1\n1 1 1\n1 1 1",
+            "student_output": "-1",
+            "oracle_expected": "-1",
+            "claimed_explanation": "Start position (0, 0) is blocked with 0; rat cannot start.",
+            "defense_note": "Student correctly produced '-1', matching mathematical oracle. Counter-case dismissed."
+          },
+          {
+            "category": "dest_blocked",
+            "input": "3 3\n1 1 1\n1 1 1\n1 1 0",
+            "student_output": "-1",
+            "oracle_expected": "-1",
+            "claimed_explanation": "Destination cell (N-1, M-1) is blocked with 0; rat cannot reach goal.",
+            "defense_note": "Student correctly produced '-1', matching mathematical oracle. Counter-case dismissed."
+          },
+          {
+            "category": "no_path_wall",
+            "input": "3 3\n1 1 1\n0 0 0\n1 1 1",
+            "student_output": "-1",
+            "oracle_expected": "-1",
+            "claimed_explanation": "Horizontal wall of zeroes partitions the maze completely.",
+            "defense_note": "Student correctly produced '-1', matching mathematical oracle. Counter-case dismissed."
+          },
+          {
+            "category": "all_blocked",
+            "input": "2 2\n1 0\n0 0",
+            "student_output": "-1",
+            "oracle_expected": "-1",
+            "claimed_explanation": "Immediate dead end at (0, 0); all neighbors are walls.",
+            "defense_note": "Student correctly produced '-1', matching mathematical oracle. Counter-case dismissed."
+          },
+          {
+            "category": "full_grid_open",
+            "input": "2 2\n1 1\n1 1",
+            "student_output": "DR RD",
+            "oracle_expected": "DR RD",
+            "claimed_explanation": "Minimal 2x2 grid completely open; rat finds multiple symmetric paths.",
+            "defense_note": "Student correctly produced 'DR RD', matching mathematical oracle. Counter-case dismissed."
+          }
+        ],
+        "counter_test_cases": [],
+        "self_correction_rounds": 1
+      },
+      "feedback": "Student Defense Loop: Defended against 5 false counter-case(s) \u2014 All 5/5 adversarial cases passed successfully."
+    },
+    {
+      "name": "complexity",
+      "analyzer": "complexity_estimator",
+      "score": 1.0,
+      "weight": 0.1,
+      "contribution": 10.0,
+      "evidence": {
+        "required_time_complexity": "O(N^2)",
+        "required_space_complexity": "O(1)",
+        "estimated_time_complexity": "O(N) or higher",
+        "estimated_space_complexity": "O(1)",
+        "sizes": [
+          1,
+          10,
+          100
+        ],
+        "timings_ms": [
+          7.17,
+          60.3,
+          56.931
+        ],
+        "loops_detected": 4
+      },
+      "feedback": "Time: O(N) or higher (required O(N^2)), Space: O(1) (required O(1)) confirmed across sizes [1, 10, 100]."
+    },
+    {
+      "name": "memory_safety",
+      "analyzer": "sanitizer_run",
+      "score": 0.6,
+      "weight": 0.05,
+      "contribution": 3.0,
+      "evidence": {
+        "mode": "static_analysis_fallback",
+        "asan_available": false,
+        "asan_unavailable_reason": "libasan.so not installed on this system",
+        "findings": [
+          {
+            "type": "dangerous_function",
+            "detail": "strcpy() does not check destination buffer size"
+          },
+          {
+            "type": "info",
+            "detail": "Fixed char buffer(s) [100, 100] with scanf \u2014 verify width limits"
+          },
+          {
+            "type": "missing_bounds_check",
+            "detail": "17 array subscript(s) with no visible bounds validation"
+          },
+          {
+            "type": "overflow_risk",
+            "detail": "32-bit int arithmetic on user input without 64-bit widening \u2014 risk of signed overflow"
+          }
+        ]
+      },
+      "feedback": "[Static Analysis \u2014 libasan unavailable] strcpy() does not check destination buffer size; 17 array subscript(s) with no visible bounds validation; 32-bit int arithmetic on user input without 64-bit widening \u2014 risk of signed overflow | Note: Fixed char buffer(s) [100, 100] with scanf \u2014 verify width limits"
+    },
+    {
+      "name": "readability",
+      "analyzer": "llm_review",
+      "score": 0.5,
+      "weight": 0.05,
+      "contribution": 2.5,
+      "evidence": {
+        "model": "llama3.1 (deterministic-fallback)",
+        "temperature": 0.0,
+        "seed": 42,
+        "raw_response": "{\"score\": 5, \"reasons\": [\"Single-letter variable names\", \"no comments\"]}"
+      },
+      "feedback": "Single-letter variable names, no comments"
+    },
+    {
+      "name": "originality",
+      "analyzer": "similarity_flag",
+      "score": 1.0,
+      "weight": 0.05,
+      "contribution": 5.0,
+      "evidence": {
+        "max_similarity": 0.04,
+        "most_similar_file": "add_slow.c",
+        "threshold": 0.85,
+        "flagged": false
+      },
+      "feedback": "Max similarity 0.04 with 'add_slow.c', not flagged (threshold 0.85)."
+    }
+  ],
+  "flags": [],
+  "graded_at": "2026-11-05T13:44:05.379362+00:00",
+  "total_time_s": 102.53,
+  "usefulness_limitations": {
+    "usefulness": [
+      {
+        "use_case": "Coding-interview and hiring screens",
+        "example": "A company runs 500 candidate submissions for an 'add two integers safely' task. The agent ranks them by correctness, edge-case handling and memory safety, and gives an explainable per-metric score.",
+        "benefit": "Fast first-round filtering where every rejection can be justified metric by metric."
+      },
+      {
+        "use_case": "Plagiarism and LLM-copy triage for instructors",
+        "example": "Two submissions reach a similarity of 0.93 against the 0.85 threshold, so the agent raises a flag in the report. The instructor reviews only those pairs instead of all 300.",
+        "benefit": "Saves review time by narrowing manual checking to suspicious cases."
+      },
+      {
+        "use_case": "Automated continuous formative feedback in programming labs",
+        "example": "Students submit code iteratively during a weekly lab; the agent instantly returns failing counter-examples, memory safety alerts (ASan), and style advice before final grading.",
+        "benefit": "Accelerates student learning loops and drastically reduces TA grading workload."
+      },
+      {
+        "use_case": "Security and sanity gating for low-level systems codebases",
+        "example": "A CI/CD pipeline runs the agent on PR submissions to verify no undefined behavior (signed integer overflow, buffer overflows) or infinite loops enter the codebase.",
+        "benefit": "Enforces strict memory safety and C standards compliance in automated deployment."
+      }
+    ],
+    "limitations": [
+      {
+        "limitation": "Tests cannot prove correctness (Incomplete input space)",
+        "example": "A submission passes all 10 hidden tests but fails when input has extra leading whitespace or an unconventional newline format not represented in the suite. The agent mistakenly awards 10/10 correctness.",
+        "mitigation": "The agent should create adversarial LLM test inputs and compare student answers with a verified reference oracle."
+      },
+      {
+        "limitation": "Static structure and modularity heuristics can be easily gamed",
+        "example": "A student inflates modularity from 3/10 to 10/10 by creating trivial unused helper functions (e.g., 'int unused() { return 0; }') without improving the true architecture of main().",
+        "mitigation": "Use abstract syntax tree (AST) call-graph analysis to verify helper functions are actively called and contribute to computation."
+      },
+      {
+        "limitation": "Empirical complexity estimation is susceptible to OS scheduling noise",
+        "example": "Under heavy CPU load or virtualization jitter on a shared server, an O(1) constant-time program exhibits runtime variance across test sizes, causing the estimator to falsely flag it as O(N).",
+        "mitigation": "Measure hardware performance counters (such as CPU instruction retirement via perf or cachegrind) instead of wall-clock time."
+      },
+      {
+        "limitation": "Plagiarism false positives on short, constrained problems",
+        "example": "For simple problems like 'add two integers', all correct solutions naturally share 85-95% structural and token similarity, triggering false plagiarism alarms on innocent submissions.",
+        "mitigation": "Combine token diffing with Control Flow Graph (CFG) isomorphic subgraph matching and ignore standard boilerplate."
+      }
+    ]
+  },
+  "tool_versions": {
+    "gcc": "16.2.1",
+    "cppcheck": "unknown",
+    "lizard": "1.24.3"
+  }
+}

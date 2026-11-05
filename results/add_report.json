@@ -1,0 +1,204 @@
+{
+  "submission": "add.c",
+  "rules_hash": "sha256:7d4039cfbda80618e1da8e44a694abac6c6920ce08b0ea5fcadc7a535e7ad4a1",
+  "grade": 74.7,
+  "first_pass": {
+    "compiled": true,
+    "smoke_ok": true,
+    "suspected_infinite_loop": false,
+    "static_sanity_ok": true,
+    "static_sanity_details": {
+      "has_main": true,
+      "has_reader": true,
+      "has_writer": true,
+      "has_return_in_main": true
+    },
+    "compile_warnings": [],
+    "smoke_stdout": "12"
+  },
+  "metrics": [
+    {
+      "name": "correctness",
+      "analyzer": "io_tests",
+      "score": 0.7,
+      "weight": 0.2,
+      "contribution": 14.0,
+      "evidence": {
+        "generated_by_llm": true,
+        "tests_passed": 7,
+        "tests_total": 10,
+        "failing": [
+          {
+            "test": "04",
+            "input": "2147483647 1",
+            "expected": "2147483648",
+            "got": "-2147483648",
+            "note": "wrong answer: likely signed integer overflow"
+          },
+          {
+            "test": "05",
+            "input": "-2147483648 -1",
+            "expected": "-2147483649",
+            "got": "2147483647",
+            "note": "wrong answer: likely signed integer overflow"
+          },
+          {
+            "test": "06",
+            "input": "1 2147483647",
+            "expected": "2147483648",
+            "got": "-2147483648",
+            "note": "wrong answer: likely signed integer overflow"
+          }
+        ]
+      },
+      "feedback": "7/10 tests pass. Fails on input '2147483647 1' (expected '2147483648', got '-2147483648')."
+    },
+    {
+      "name": "syntax",
+      "analyzer": "compiler_warnings",
+      "score": 1.0,
+      "weight": 0.1,
+      "contribution": 10.0,
+      "evidence": {
+        "warning_count": 0,
+        "warnings": []
+      },
+      "feedback": "Clean compile with 0 warnings."
+    },
+    {
+      "name": "structure",
+      "analyzer": "static_analysis",
+      "score": 0.6,
+      "weight": 0.1,
+      "contribution": 6.0,
+      "evidence": {
+        "functions": [
+          {
+            "name": "main",
+            "cyclomatic_complexity": 1,
+            "nloc": 6
+          }
+        ],
+        "cppcheck_issues": [],
+        "has_prototypes": false
+      },
+      "feedback": "no headers/prototypes, single-block code"
+    },
+    {
+      "name": "modularity",
+      "analyzer": "function_split",
+      "score": 0.3,
+      "weight": 0.1,
+      "contribution": 3.0,
+      "evidence": {
+        "functions_defined": 1,
+        "function_names": [
+          "main"
+        ],
+        "expected_min": 2
+      },
+      "feedback": "Only main() is defined. Extract a helper function (e.g., add(long long, long long))."
+    },
+    {
+      "name": "logical",
+      "analyzer": "edge_case_runner",
+      "score": 0.67,
+      "weight": 0.1,
+      "contribution": 6.7,
+      "evidence": {
+        "generated_by_llm": true,
+        "cases_tested": 6,
+        "cases_passed": 4,
+        "counter_test_cases": [
+          {
+            "category": "int_overflow",
+            "input": "2147483647 1",
+            "expected": "2147483648",
+            "got": "-2147483648",
+            "explanation": "a + b overflows on 32-bit signed ints (INT_MAX + 1 wraps to -2147483648). Use long long or check bounds before adding."
+          },
+          {
+            "category": "int_overflow",
+            "input": "-2147483648 -1",
+            "expected": "-2147483649",
+            "got": "2147483647",
+            "explanation": "a + b overflows on 32-bit signed ints (INT_MIN - 1 wraps to 2147483647). Use long long or check bounds before adding."
+          }
+        ]
+      },
+      "feedback": "Fails on counter-test input '2147483647 1' (expected '2147483648', got '-2147483648'). WHY: a + b overflows on 32-bit signed ints (INT_MAX + 1 wraps to -2147483648). Use long long or check bounds before adding."
+    },
+    {
+      "name": "complexity",
+      "analyzer": "complexity_estimator",
+      "score": 1.0,
+      "weight": 0.1,
+      "contribution": 10.0,
+      "evidence": {
+        "required_complexity": "O(1)",
+        "estimated_time_complexity": "O(1)",
+        "estimated_space_complexity": "O(1)",
+        "sizes": [
+          1,
+          10,
+          100
+        ],
+        "timings_ms": [
+          5.221,
+          4.902,
+          5.668
+        ],
+        "loops_detected": 0
+      },
+      "feedback": "Time: O(1), Space: O(1) confirmed across sizes [1, 10, 100]."
+    },
+    {
+      "name": "memory_safety",
+      "analyzer": "sanitizer_run",
+      "score": 1.0,
+      "weight": 0.1,
+      "contribution": 10.0,
+      "evidence": {
+        "memory_errors": [],
+        "ubsan_notes": [
+          {
+            "input": "2147483647 1",
+            "sanitizer_output": "/tmp/autograder_sandbox_on1s3wew/add.c:5:5: runtime error: signed integer overflow: 2147483647 + 1 cannot be represented in type 'int'"
+          }
+        ]
+      },
+      "feedback": "No memory leaks or out-of-bounds accesses detected (ASan clean)."
+    },
+    {
+      "name": "readability",
+      "analyzer": "llm_review",
+      "score": 0.5,
+      "weight": 0.1,
+      "contribution": 5.0,
+      "evidence": {
+        "model": "llama3.1 (deterministic-fallback)",
+        "temperature": 0.0,
+        "seed": 42,
+        "raw_response": "{\"score\": 5, \"reasons\": [\"Single-letter variable names\", \"no comments\"]}"
+      },
+      "feedback": "Single-letter variable names, no comments"
+    },
+    {
+      "name": "originality",
+      "analyzer": "similarity_flag",
+      "score": 1.0,
+      "weight": 0.1,
+      "contribution": 10.0,
+      "evidence": {
+        "max_similarity": 0.0,
+        "most_similar_file": null,
+        "threshold": 0.85,
+        "flagged": false
+      },
+      "feedback": "No other submissions found in corpus for comparison."
+    }
+  ],
+  "flags": [],
+  "graded_at": "2026-10-29T10:53:15.816178+00:00",
+  "total_time_s": 178.56
+}

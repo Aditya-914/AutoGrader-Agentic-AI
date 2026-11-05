@@ -1,0 +1,104 @@
+{
+  "problem": "dijkstra",
+  "problem_description": "Write a C program to find the shortest distance from a given source vertex to all other vertices in a weighted graph using Dijkstra's Shortest Path Algorithm.\nThe program should accept the number of vertices and the adjacency matrix of the graph as input. Consider vertex 0 as the source vertex and calculate the minimum distance from the source to every other vertex. Finally, display the shortest distances.\nInput: Number of vertices in the graph and Adjacency matrix representing the weighted graph.\nOutput: Print the shortest distance from the source vertex (0) to all other vertices.\n",
+  "time_limit_s": 5,
+  "memory_limit_mb": 100,
+  "sample_input": "5\n0 1 4 6 1\n1 0 0 2 0\n4 0 0 0 1\n6 2 0 0 5\n1 0 1 5 0\n",
+  "sample_output": "0 1 2 3 1",
+  "llm_config": {
+    "model": "llama3.1",
+    "temperature": 0,
+    "seed": 42
+  },
+  "metrics": [
+    {
+      "name": "correctness",
+      "analyzer": "io_tests",
+      "weight": 0.2,
+      "params": {
+        "testset_dir": "tests/dijkstra/",
+        "auto_generate": true,
+        "num_tests": 10
+      }
+    },
+    {
+      "name": "syntax",
+      "analyzer": "compiler_warnings",
+      "weight": 0.15,
+      "params": {
+        "flags": "-Wall -Wextra -Werror -std=c11"
+      }
+    },
+    {
+      "name": "structure",
+      "analyzer": "static_analysis",
+      "weight": 0.1,
+      "params": {
+        "max_cyclomatic": 8,
+        "max_function_length": 40
+      }
+    },
+    {
+      "name": "modularity",
+      "analyzer": "function_split",
+      "weight": 0.1,
+      "params": {
+        "expect_helpers": true,
+        "min_functions": 2
+      }
+    },
+    {
+      "name": "logical",
+      "analyzer": "edge_case_runner",
+      "weight": 0.15,
+      "params": {
+        "auto_generate": true,
+        "cases": [
+          "negatives",
+          "zero"
+        ]
+      }
+    },
+    {
+      "name": "complexity",
+      "analyzer": "complexity_estimator",
+      "weight": 0.1,
+      "params": {
+        "required": "O(N^3)",
+        "sizes": [
+          2,
+          4,
+          8
+        ],
+        "required_space": "O(N)"
+      }
+    },
+    {
+      "name": "memory_safety",
+      "analyzer": "sanitizer_run",
+      "weight": 0.05,
+      "params": {
+        "flags": "-fsanitize=address,undefined"
+      }
+    },
+    {
+      "name": "readability",
+      "analyzer": "llm_review",
+      "weight": 0.05,
+      "params": {
+        "model": "llama3.1",
+        "temperature": 0,
+        "seed": 42
+      }
+    },
+    {
+      "name": "originality",
+      "analyzer": "similarity_flag",
+      "weight": 0.1,
+      "params": {
+        "corpus_dir": "corpus/",
+        "flag_threshold": 0.85
+      }
+    }
+  ]
+}

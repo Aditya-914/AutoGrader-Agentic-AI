@@ -1,0 +1,105 @@
+{
+  "problem": "Substring_containing_all_letters",
+  "problem_description": "Given a string s consisting only of characters a, b and c.\n\nReturn the number of substrings containing at least one occurrence of all these characters a, b and c.\n\nExample 1:\nInput: s = \"abcabc\"\nOutput: 10\nExplanation: The substrings containing at least one occurrence of the characters a, b and c are \"abc\", \"abca\", \"abcab\", \"abcabc\", \"bca\", \"bcab\", \"bcabc\", \"cab\", \"cabc\" and \"abc\" (again)",
+  "time_limit_s": 3,
+  "memory_limit_mb": 100,
+  "sample_input": "abcabc",
+  "sample_output": "10",
+  "llm_config": {
+    "model": "llama3.1",
+    "temperature": 0,
+    "seed": 42
+  },
+  "metrics": [
+    {
+      "name": "correctness",
+      "analyzer": "io_tests",
+      "weight": 0.2,
+      "params": {
+        "testset_dir": "tests/substring_containing_all_letters/",
+        "auto_generate": true,
+        "num_tests": 10
+      }
+    },
+    {
+      "name": "syntax",
+      "analyzer": "compiler_warnings",
+      "weight": 0.15,
+      "params": {
+        "flags": "-Wall -Wextra -Werror -std=c11"
+      }
+    },
+    {
+      "name": "structure",
+      "analyzer": "static_analysis",
+      "weight": 0.1,
+      "params": {
+        "max_cyclomatic": 8,
+        "max_function_length": 40
+      }
+    },
+    {
+      "name": "modularity",
+      "analyzer": "function_split",
+      "weight": 0.1,
+      "params": {
+        "expect_helpers": true,
+        "min_functions": 2
+      }
+    },
+    {
+      "name": "logical",
+      "analyzer": "edge_case_runner",
+      "weight": 0.1,
+      "params": {
+        "auto_generate": true,
+        "cases": [
+          "missing_char",
+          "minimal_valid",
+          "repeated_char",
+          "empty_or_short"
+        ]
+      }
+    },
+    {
+      "name": "complexity",
+      "analyzer": "complexity_estimator",
+      "weight": 0.1,
+      "params": {
+        "required": "O(N)",
+        "sizes": [
+          1,
+          10,
+          100
+        ]
+      }
+    },
+    {
+      "name": "memory_safety",
+      "analyzer": "sanitizer_run",
+      "weight": 0.05,
+      "params": {
+        "flags": "-fsanitize=address,undefined"
+      }
+    },
+    {
+      "name": "readability",
+      "analyzer": "llm_review",
+      "weight": 0.1,
+      "params": {
+        "model": "llama3.1",
+        "temperature": 0,
+        "seed": 42
+      }
+    },
+    {
+      "name": "originality",
+      "analyzer": "similarity_flag",
+      "weight": 0.1,
+      "params": {
+        "corpus_dir": "corpus/",
+        "flag_threshold": 0.85
+      }
+    }
+  ]
+}

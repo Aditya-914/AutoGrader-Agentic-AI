@@ -1,0 +1,105 @@
+{
+  "problem": "MCM",
+  "problem_description": "Write a C program for a given dimension of a sequence of matrices in an array arr[], where the dimension of the ith matrix is (arr[i-1] * arr[i]), the task is to find the most efficient way to multiply these matrices together such that the total number of element multiplications is minimum.\n\nExamples:\n\n    Input:  N=5\narr[] = {40, 20, 30, 10, 30}\n    Output: 26000\n    Explanation: There are 4 matrices of dimensions 40×20, 20×30, 30×10, 10×30.\n    Let the input 4 matrices be A, B, C, is, and D.\n    The minimum number of multiplications is obtained by putting parenthesis in the following way (A(BC))D.\n    The minimum is 20*30*10 + 40*20*10 + 40*10*30",
+  "time_limit_s": 2,
+  "memory_limit_mb": 64,
+  "sample_input": "5 40 20 30 10 30 ",
+  "sample_output": "26000",
+  "llm_config": {
+    "model": "llama3.1",
+    "temperature": 0,
+    "seed": 42
+  },
+  "metrics": [
+    {
+      "name": "correctness",
+      "analyzer": "io_tests",
+      "weight": 0.2,
+      "params": {
+        "testset_dir": "tests/mcm/",
+        "auto_generate": true,
+        "num_tests": 10
+      }
+    },
+    {
+      "name": "syntax",
+      "analyzer": "compiler_warnings",
+      "weight": 0.1,
+      "params": {
+        "flags": "-Wall -Wextra -Werror -std=c11"
+      }
+    },
+    {
+      "name": "structure",
+      "analyzer": "static_analysis",
+      "weight": 0.1,
+      "params": {
+        "max_cyclomatic": 8,
+        "max_function_length": 40
+      }
+    },
+    {
+      "name": "modularity",
+      "analyzer": "function_split",
+      "weight": 0.1,
+      "params": {
+        "expect_helpers": true,
+        "min_functions": 2
+      }
+    },
+    {
+      "name": "logical",
+      "analyzer": "edge_case_runner",
+      "weight": 0.1,
+      "params": {
+        "auto_generate": true,
+        "cases": [
+          "single_matrix",
+          "two_matrices",
+          "repeated_dims",
+          "large_chain"
+        ]
+      }
+    },
+    {
+      "name": "complexity",
+      "analyzer": "complexity_estimator",
+      "weight": 0.1,
+      "params": {
+        "required": "O(N) or higher",
+        "sizes": [
+          1,
+          10,
+          100
+        ]
+      }
+    },
+    {
+      "name": "memory_safety",
+      "analyzer": "sanitizer_run",
+      "weight": 0.1,
+      "params": {
+        "flags": "-fsanitize=address,undefined"
+      }
+    },
+    {
+      "name": "readability",
+      "analyzer": "llm_review",
+      "weight": 0.1,
+      "params": {
+        "model": "llama3.1",
+        "temperature": 0,
+        "seed": 42
+      }
+    },
+    {
+      "name": "originality",
+      "analyzer": "similarity_flag",
+      "weight": 0.1,
+      "params": {
+        "corpus_dir": "corpus/",
+        "flag_threshold": 0.85
+      }
+    }
+  ]
+}

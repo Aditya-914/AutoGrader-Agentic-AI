@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AutoGrader AI — C Program Evaluator</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220%22%20%22100%22%20%22100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>">
+</head>
+<body>
+
+  <!-- Top App Bar -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="brand">
+        <div class="brand-icon">⚡</div>
+        <div>
+          <div class="brand-title">AutoGrader AI</div>
+          <div class="brand-subtitle">Rule-Driven Autonomous C Evaluator</div>
+        </div>
+      </div>
+
+      <div class="header-badges">
+        <div class="status-badge" id="system-status-badge">
+          <span class="status-dot"></span> System Ready
+        </div>
+        <button class="icon-btn" id="theme-toggle-btn" title="Toggle Theme">🌙</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Tab Navigation -->
+  <nav class="tab-bar">
+    <div class="tab-bar-inner">
+      <button class="tab-btn active" data-tab="code-tab">📝 Code & Grade</button>
+      <button class="tab-btn" data-tab="rules-tab">⚙️ Rules & Weights</button>
+      <button class="tab-btn" data-tab="reports-tab">📊 Reports</button>
+    </div>
+  </nav>
+
+  <!-- ═══════════════════════════════════════════════════════════════════
+       TAB 1: CODE & GRADE
+       ═══════════════════════════════════════════════════════════════════ -->
+  <div class="tab-content active" id="code-tab">
+
+    <!-- Problem Banner -->
+    <section class="problem-banner">
+      <div class="problem-container">
+        <div class="problem-header">
+          <div class="problem-title-group">
+            <span class="problem-tag">Active Problem</span>
+            <h2 class="problem-title" id="banner-problem-title">Loading...</h2>
+          </div>
+          <div class="problem-limits">
+            <span class="limit-pill">⏱️ Time: <strong id="banner-time-limit">1.0s</strong></span>
+            <span class="limit-pill">🧠 Memory: <strong id="banner-mem-limit">64 MB</strong></span>
+            <span class="limit-pill">📄 Rules: <strong id="banner-rules-file">add_rules.json</strong></span>
+          </div>
+        </div>
+        <p class="problem-desc" id="banner-problem-desc">Loading problem description...</p>
+      </div>
+    </section>
+
+    <!-- Main 2-Column Workspace -->
+    <main class="main-layout">
+
+      <!-- LEFT COLUMN: Code Studio & Quick Runner -->
+      <section class="workspace-col">
+
+        <!-- Code Editor Card -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <span>📝</span> C Source Code
+            </div>
+            <div class="preset-selector-group">
+              <label for="preset-select" class="control-label">Load Preset:</label>
+              <select id="preset-select" class="select-control">
+                <option value="mcm.c">mcm.c (Matrix Chain Multiplication)</option>
+                <option value="maze.c">maze.c (Rat in a Maze)</option>
+                <option value="substring.c">substring.c (Substring with a,b,c)</option>
+                <option value="add_safe.c">add_safe.c (Modular & Safe 64-bit)</option>
+                <option value="add.c">add.c (Naive 32-bit with Overflow)</option>
+                <option value="infinite_loop.c">infinite_loop.c (Infinite Loop Bug)</option>
+                <option value="syntax_error.c">syntax_error.c (Compiler Error)</option>
+                <option value="add_slow.c">add_slow.c (Inefficient O(N) Loop)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Editor Area -->
+          <div class="editor-container">
+            <div class="line-numbers" id="line-numbers"></div>
+            <textarea id="code-textarea" class="code-textarea" spellcheck="false" placeholder="// Write or paste your C program here..."></textarea>
+          </div>
+
+          <div class="editor-statusbar">
+            <span id="editor-cursor-pos">Ln 1, Col 1</span>
+            <div class="editor-actions">
+              <button class="btn btn-ghost btn-sm" id="clear-code-btn">Clear</button>
+              <label class="btn btn-ghost btn-sm file-upload-label">
+                Upload .c
+                <input type="file" id="file-uploader" accept=".c" style="display:none;">
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Test Sandbox Runner -->
+        <div class="card">
+          <div class="card-header collapsible-header" id="quick-run-toggle">
+            <div class="card-title">
+              <span>🧪</span> Quick Test with Custom Input
+            </div>
+            <span class="toggle-icon">▼</span>
+          </div>
+          <div class="card-body" id="quick-run-body">
+            <div class="quick-run-grid">
+              <div>
+                <label class="control-label">Custom Standard Input (stdin):</label>
+                <input type="text" id="stdin-input" class="text-control" value="2147483647 1" placeholder="e.g. 7 5">
+              </div>
+              <div style="display:flex; align-items:flex-end;">
+                <button class="btn btn-secondary" id="quick-run-btn" style="width:100%;">
+                  ▶ Run with Stdin
+                </button>
+              </div>
+            </div>
+
+            <div class="terminal-preview" id="quick-run-output">
+              $ Ready. Click 'Run with Stdin' to test execution output before full grading.
+            </div>
+          </div>
+        </div>
+
+        <!-- Grade Action Button + Rules Selector -->
+        <div class="grade-row">
+          <div class="grade-rules-pick">
+            <label class="control-label">Grade with:</label>
+            <select id="grade-rules-select" class="select-control"></select>
+          </div>
+          <button class="btn btn-primary grade-action-btn" id="grade-btn">
+            <span>⚡ Grade My Submission</span>
+          </button>
+        </div>
+
+      </section>
+
+      <!-- RIGHT COLUMN: Results -->
+      <section class="workspace-col">
+
+        <!-- Default Placeholder (Before First Grade) -->
+        <div class="card" id="rubric-overview-card">
+          <div class="card-header">
+            <div class="card-title">
+              <span>📋</span> Grading Rubric
+            </div>
+            <span class="status-badge" id="rubric-status-badge">Configurable</span>
+          </div>
+          <div class="card-body">
+            <p class="rubric-intro">
+              Submissions are graded against the active rule set. You can edit rules and weights from the <strong>"Rules & Weights"</strong> tab. Click <strong>"Grade My Submission"</strong> to evaluate:
+            </p>
+            <div class="rubric-list" id="rubric-list">
+              <!-- Dynamically populated from active rules -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Dynamic Evaluation Results View (Shown after grading) -->
+        <div id="results-container" style="display:none;">
+
+          <!-- Hero Score Card -->
+          <div class="score-card">
+            <div class="score-badge-group">
+              <div class="grade-letter" id="grade-letter">A</div>
+              <div>
+                <div class="grade-value-line">
+                  <span class="grade-number" id="grade-number">90.0</span>
+                  <span class="grade-max">/ 100</span>
+                </div>
+                <div class="grade-verdict" id="grade-verdict">Excellent Submission</div>
+              </div>
+            </div>
+
+            <div class="score-meta-grid">
+              <div class="score-meta-cell">
+                <div class="score-meta-label">Evaluation Time</div>
+                <div class="score-meta-val" id="eval-time">0.3s</div>
+              </div>
+              <div class="score-meta-cell">
+                <div class="score-meta-label">Rules File</div>
+                <div class="score-meta-val" id="rules-used">add_rules.json</div>
+              </div>
+              <div class="score-meta-cell">
+                <div class="score-meta-label">Compilation</div>
+                <div class="score-meta-val" id="compile-status">Clean</div>
+              </div>
+              <div class="score-meta-cell">
+                <div class="score-meta-label">Infinite Loop</div>
+                <div class="score-meta-val" id="loop-status">Safe</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Student Defense Loop Card -->
+          <div class="defense-card">
+            <div class="defense-title">
+              <span>🛡️ Student Defense Loop (Reality Check Active)</span>
+            </div>
+            <p class="defense-desc" id="defense-summary">
+              The agent cross-checked candidate failure cases against a verified Python reference oracle to defend your submission against LLM hallucinations.
+            </p>
+            <div id="defense-dismissed-list" class="defense-items"></div>
+          </div>
+
+          <!-- Metrics Table Card -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">
+                <span>📊</span> Metric Breakdown
+              </div>
+            </div>
+            <div class="card-body" style="padding:0;">
+              <table class="report-table">
+                <thead>
+                  <tr>
+                    <th>Metric</th>
+                    <th>Weight</th>
+                    <th>Score</th>
+                    <th>Earned</th>
+                    <th>Verdict / Feedback</th>
+                  </tr>
+                </thead>
+                <tbody id="metrics-table-body"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- What Failed Card -->
+          <div class="card" id="failures-card" style="display:none;">
+            <div class="card-header" style="background:var(--danger-bg); border-color:var(--danger-border);">
+              <div class="card-title" style="color:var(--danger-color);">
+                <span>⚠️</span> Failing Test Cases & Corner Inputs
+              </div>
+            </div>
+            <div class="card-body">
+              <div id="failures-container" class="failures-list"></div>
+            </div>
+          </div>
+
+          <!-- Suggestions Card -->
+          <div class="card" id="suggestions-card" style="display:none;">
+            <div class="card-header">
+              <div class="card-title">
+                <span>💡</span> Actionable Suggestions to Raise Grade
+              </div>
+            </div>
+            <div class="card-body">
+              <ul id="suggestions-list" class="suggestions-list"></ul>
+            </div>
+          </div>
+
+          <!-- Report Download Actions -->
+          <div class="report-actions">
+            <button class="btn btn-secondary" onclick="downloadTextReport()">
+              📄 Download Text Report
+            </button>
+            <button class="btn btn-secondary" onclick="downloadJsonReport()">
+              📥 Download JSON Report
+            </button>
+          </div>
+
+        </div>
+
+      </section>
+
+    </main>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════════
+       TAB 2: RULES & WEIGHTS
+       ═══════════════════════════════════════════════════════════════════ -->
+  <div class="tab-content" id="rules-tab">
+    <main class="main-layout">
+
+      <!-- LEFT: Rule Set Selector + Problem Config -->
+      <section class="workspace-col">
+
+        <!-- Rule File Selector -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><span>📂</span> Rule Sets</div>
+          </div>
+          <div class="card-body">
+            <label class="control-label">Select a rule file to edit:</label>
+            <select id="rules-file-select" class="select-control" style="width:100%; margin-top:0.4rem;"></select>
+            <div style="margin-top:0.75rem; display:flex; gap:0.5rem;">
+              <button class="btn btn-secondary btn-sm" id="load-rules-btn">Load</button>
+              <button class="btn btn-ghost btn-sm" id="new-rules-btn">+ New Rule Set</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Problem Configuration -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><span>📝</span> Problem Configuration</div>
+          </div>
+          <div class="card-body">
+            <div class="form-group">
+              <label class="control-label">Problem Name</label>
+              <input type="text" id="rule-problem-name" class="text-control full-width" placeholder="e.g. add_two_integers">
+            </div>
+            <div class="form-group">
+              <label class="control-label">Problem Description (used by Ollama for test generation)</label>
+              <textarea id="rule-problem-desc" class="text-control full-width" rows="4" placeholder="Describe the problem so the LLM can generate test cases..."></textarea>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="control-label">Execution Time Limit (seconds)</label>
+                <input type="number" id="rule-time-limit" class="text-control" step="0.5" min="0.5" max="30" value="1">
+              </div>
+              <div class="form-group">
+                <label class="control-label">Execution Memory Limit (MB)</label>
+                <input type="number" id="rule-mem-limit" class="text-control" step="8" min="8" max="512" value="64">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="control-label">Required Time Complexity (Big-O)</label>
+                <select id="rule-required-complexity" class="select-control full-width">
+                  <option value="O(1)">O(1) — Constant Time</option>
+                  <option value="O(N)">O(N) — Linear Time</option>
+                  <option value="O(N) or higher">O(N) or higher — Linear or Polynomial</option>
+                  <option value="O(N^2)">O(N^2) — Quadratic Time</option>
+                  <option value="O(N^3)">O(N^3) — Cubic Time</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="control-label">Required Space Complexity (Big-O)</label>
+                <select id="rule-required-space" class="select-control full-width">
+                  <option value="O(1)">O(1) — Constant Auxiliary Space</option>
+                  <option value="O(N)">O(N) — Dynamic Auxiliary Space</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="control-label">Sample Input</label>
+              <input type="text" id="rule-sample-input" class="text-control full-width" placeholder='e.g. 7 5\n'>
+            </div>
+            <div class="form-group">
+              <label class="control-label">Expected Sample Output (used to validate Ollama oracle)</label>
+              <input type="text" id="rule-sample-output" class="text-control full-width" placeholder='e.g. 12'>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="control-label">LLM Model</label>
+                <input type="text" id="rule-llm-model" class="text-control" value="llama3.1">
+              </div>
+              <div class="form-group">
+                <label class="control-label">Temperature</label>
+                <input type="number" id="rule-llm-temp" class="text-control" step="0.1" min="0" max="2" value="0">
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- RIGHT: Metric Weights -->
+      <section class="workspace-col">
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><span>⚖️</span> Metric Weights</div>
+            <div class="weight-sum-badge" id="weight-sum-badge">Total: 100%</div>
+          </div>
+          <div class="card-body">
+            <p style="font-size:0.82rem; color:var(--text-muted); margin-bottom:1rem;">
+              Enter the percentage weight (0–100%) for each metric manually. Total must equal 100%.
+            </p>
+            <div id="metrics-weight-editor">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Save Button -->
+        <div class="save-rules-row">
+          <div class="form-group" style="flex:1;">
+            <label class="control-label">Save as filename:</label>
+            <input type="text" id="save-rules-filename" class="text-control full-width" value="add_rules.json">
+          </div>
+          <button class="btn btn-primary" id="save-rules-btn" style="align-self:flex-end;">
+            💾 Save Rules
+          </button>
+        </div>
+
+      </section>
+
+    </main>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════════
+       TAB 3: REPORTS
+       ═══════════════════════════════════════════════════════════════════ -->
+  <div class="tab-content" id="reports-tab">
+    <main class="main-layout" style="grid-template-columns:1fr;">
+      <section class="workspace-col" style="max-width:900px; margin:0 auto;">
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><span>📊</span> Past Reports</div>
+            <button class="btn btn-ghost btn-sm" id="refresh-reports-btn">🔄 Refresh</button>
+          </div>
+          <div class="card-body" style="padding:0;">
+            <table class="report-table">
+              <thead>
+                <tr>
+                  <th>Submission</th>
+                  <th>Grade</th>
+                  <th>Compiled</th>
+                  <th>Time</th>
+                  <th>Graded At</th>
+                </tr>
+              </thead>
+              <tbody id="reports-table-body">
+                <tr><td colspan="5" style="text-align:center; color:var(--text-muted); padding:2rem;">Click "Refresh" to load reports</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </section>
+    </main>
+  </div>
+
+  <!-- Grading Progress Spinner Overlay -->
+  <div class="loading-overlay" id="loading-overlay">
+    <div class="loading-box">
+      <div class="spinner"></div>
+      <div class="loading-title">Evaluating Submission...</div>
+      <div class="loading-subtitle">Phase 1 Sanity & Smoke Test ➔ Phase 2 Parallel Dispatch ➔ Defense Loop</div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div class="toast" id="toast-message"></div>
+
+  <!-- Scripts -->
+  <script src="js/editor.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

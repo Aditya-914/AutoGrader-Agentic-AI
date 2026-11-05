@@ -1,0 +1,249 @@
+{
+  "submission": "add_safe.c",
+  "rules_hash": "sha256:8ea7a8dfe97a5da21ae1a0eb7057e9fc043d55ee1659800d1b2df5a8b8e40e78",
+  "grade": 97.0,
+  "first_pass": {
+    "compiled": true,
+    "smoke_ok": true,
+    "suspected_infinite_loop": false,
+    "static_sanity_ok": true,
+    "static_sanity_details": {
+      "has_main": true,
+      "has_reader": true,
+      "has_writer": true,
+      "has_return_in_main": true
+    },
+    "compile_warnings": [],
+    "smoke_stdout": "12"
+  },
+  "metrics": [
+    {
+      "name": "correctness",
+      "analyzer": "io_tests",
+      "score": 1.0,
+      "weight": 0.2,
+      "contribution": 20.0,
+      "evidence": {
+        "generated_by_llm": true,
+        "tests_passed": 10,
+        "tests_total": 10,
+        "failing": []
+      },
+      "feedback": "All 10/10 tests pass."
+    },
+    {
+      "name": "syntax",
+      "analyzer": "compiler_warnings",
+      "score": 1.0,
+      "weight": 0.1,
+      "contribution": 10.0,
+      "evidence": {
+        "warning_count": 0,
+        "warnings": []
+      },
+      "feedback": "Clean compile with 0 warnings."
+    },
+    {
+      "name": "structure",
+      "analyzer": "static_analysis",
+      "score": 1.0,
+      "weight": 0.1,
+      "contribution": 10.0,
+      "evidence": {
+        "functions": [
+          {
+            "name": "add_safe",
+            "cyclomatic_complexity": 1,
+            "nloc": 3
+          },
+          {
+            "name": "main",
+            "cyclomatic_complexity": 2,
+            "nloc": 7
+          }
+        ],
+        "cppcheck_issues": [],
+        "has_prototypes": false
+      },
+      "feedback": "Good static structure and low cyclomatic complexity."
+    },
+    {
+      "name": "modularity",
+      "analyzer": "function_split",
+      "score": 1.0,
+      "weight": 0.1,
+      "contribution": 10.0,
+      "evidence": {
+        "functions_defined": 2,
+        "function_names": [
+          "add_safe",
+          "main"
+        ],
+        "expected_min": 2
+      },
+      "feedback": "Modularity requirement met (2 functions defined: add_safe, main)."
+    },
+    {
+      "name": "logical",
+      "analyzer": "edge_case_runner",
+      "score": 1.0,
+      "weight": 0.1,
+      "contribution": 10.0,
+      "evidence": {
+        "generated_by_llm": true,
+        "student_defense_loop_active": true,
+        "cases_tested": 3,
+        "cases_passed": 3,
+        "defended_against_llm": [
+          {
+            "category": "int_overflow",
+            "input": "2147483647 1",
+            "student_output": "2147483648",
+            "oracle_expected": "2147483648",
+            "claimed_explanation": "32-bit signed int overflow on INT_MAX + 1.",
+            "defense_note": "Student correctly produced '2147483648', matching mathematical oracle. Counter-case dismissed."
+          },
+          {
+            "category": "negatives",
+            "input": "-100 -200",
+            "student_output": "-300",
+            "oracle_expected": "-300",
+            "claimed_explanation": "Both operands negative.",
+            "defense_note": "Student correctly produced '-300', matching mathematical oracle. Counter-case dismissed."
+          },
+          {
+            "category": "zero",
+            "input": "0 0",
+            "student_output": "0",
+            "oracle_expected": "0",
+            "claimed_explanation": "Both operands zero.",
+            "defense_note": "Student correctly produced '0', matching mathematical oracle. Counter-case dismissed."
+          }
+        ],
+        "counter_test_cases": [],
+        "self_correction_rounds": 1
+      },
+      "feedback": "Student Defense Loop: Defended against 3 false counter-case(s) \u2014 All 3/3 adversarial cases passed successfully."
+    },
+    {
+      "name": "complexity",
+      "analyzer": "complexity_estimator",
+      "score": 1.0,
+      "weight": 0.1,
+      "contribution": 10.0,
+      "evidence": {
+        "required_complexity": "O(1)",
+        "estimated_time_complexity": "O(1)",
+        "estimated_space_complexity": "O(1)",
+        "sizes": [
+          1,
+          10,
+          100
+        ],
+        "timings_ms": [
+          3.461,
+          6.423,
+          2.549
+        ],
+        "loops_detected": 0
+      },
+      "feedback": "Time: O(1), Space: O(1) confirmed across sizes [1, 10, 100]."
+    },
+    {
+      "name": "memory_safety",
+      "analyzer": "sanitizer_run",
+      "score": 1.0,
+      "weight": 0.1,
+      "contribution": 10.0,
+      "evidence": {
+        "mode": "static_analysis_fallback",
+        "asan_available": false,
+        "asan_unavailable_reason": "libasan.so not installed on this system",
+        "findings": []
+      },
+      "feedback": "[Static Analysis \u2014 libasan unavailable] Static analysis: no dangerous functions or obvious memory safety issues found."
+    },
+    {
+      "name": "readability",
+      "analyzer": "llm_review",
+      "score": 0.7,
+      "weight": 0.1,
+      "contribution": 7.0,
+      "evidence": {
+        "model": "llama3.1 (deterministic-fallback)",
+        "temperature": 0.0,
+        "seed": 42,
+        "raw_response": "{\"score\": 7, \"reasons\": [\"Single-letter variable names\"]}"
+      },
+      "feedback": "Single-letter variable names"
+    },
+    {
+      "name": "originality",
+      "analyzer": "similarity_flag",
+      "score": 1.0,
+      "weight": 0.1,
+      "contribution": 10.0,
+      "evidence": {
+        "max_similarity": 0.14,
+        "most_similar_file": "add_slow.c",
+        "threshold": 0.85,
+        "flagged": false
+      },
+      "feedback": "Max similarity 0.14 with 'add_slow.c', not flagged (threshold 0.85)."
+    }
+  ],
+  "flags": [],
+  "graded_at": "2026-11-04T21:38:00.209951+00:00",
+  "total_time_s": 0.09,
+  "usefulness_limitations": {
+    "usefulness": [
+      {
+        "use_case": "Coding-interview and hiring screens",
+        "example": "A company runs 500 candidate submissions for an 'add two integers safely' task. The agent ranks them by correctness, edge-case handling and memory safety, and gives an explainable per-metric score.",
+        "benefit": "Fast first-round filtering where every rejection can be justified metric by metric."
+      },
+      {
+        "use_case": "Plagiarism and LLM-copy triage for instructors",
+        "example": "Two submissions reach a similarity of 0.93 against the 0.85 threshold, so the agent raises a flag in the report. The instructor reviews only those pairs instead of all 300.",
+        "benefit": "Saves review time by narrowing manual checking to suspicious cases."
+      },
+      {
+        "use_case": "Automated continuous formative feedback in programming labs",
+        "example": "Students submit code iteratively during a weekly lab; the agent instantly returns failing counter-examples, memory safety alerts (ASan), and style advice before final grading.",
+        "benefit": "Accelerates student learning loops and drastically reduces TA grading workload."
+      },
+      {
+        "use_case": "Security and sanity gating for low-level systems codebases",
+        "example": "A CI/CD pipeline runs the agent on PR submissions to verify no undefined behavior (signed integer overflow, buffer overflows) or infinite loops enter the codebase.",
+        "benefit": "Enforces strict memory safety and C standards compliance in automated deployment."
+      }
+    ],
+    "limitations": [
+      {
+        "limitation": "Tests cannot prove correctness (Incomplete input space)",
+        "example": "A submission passes all 10 hidden tests but fails when input has extra leading whitespace or an unconventional newline format not represented in the suite. The agent mistakenly awards 10/10 correctness.",
+        "mitigation": "The agent should create adversarial LLM test inputs and compare student answers with a verified reference oracle."
+      },
+      {
+        "limitation": "Static structure and modularity heuristics can be easily gamed",
+        "example": "A student inflates modularity from 3/10 to 10/10 by creating trivial unused helper functions (e.g., 'int unused() { return 0; }') without improving the true architecture of main().",
+        "mitigation": "Use abstract syntax tree (AST) call-graph analysis to verify helper functions are actively called and contribute to computation."
+      },
+      {
+        "limitation": "Empirical complexity estimation is susceptible to OS scheduling noise",
+        "example": "Under heavy CPU load or virtualization jitter on a shared server, an O(1) constant-time program exhibits runtime variance across test sizes, causing the estimator to falsely flag it as O(N).",
+        "mitigation": "Measure hardware performance counters (such as CPU instruction retirement via perf or cachegrind) instead of wall-clock time."
+      },
+      {
+        "limitation": "Plagiarism false positives on short, constrained problems",
+        "example": "For simple problems like 'add two integers', all correct solutions naturally share 85-95% structural and token similarity, triggering false plagiarism alarms on innocent submissions.",
+        "mitigation": "Combine token diffing with Control Flow Graph (CFG) isomorphic subgraph matching and ignore standard boilerplate."
+      }
+    ]
+  },
+  "tool_versions": {
+    "gcc": "16.2.1",
+    "cppcheck": "unknown",
+    "lizard": "1.24.3"
+  }
+}

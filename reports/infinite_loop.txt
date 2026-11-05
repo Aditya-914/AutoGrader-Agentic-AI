@@ -1,0 +1,46 @@
+===== Grading report for infinite_loop.c =====
+Overall grade: 26.0 / 100
+Metric             Weight   Score      Contribution   Verdict
+correctness        20       0/10       0.0            0 of 10 tests pass
+syntax             10       10/10      10.0           Clean compile with 0 warnings
+structure          10       6/10       6.0            no headers/prototypes, single-block code
+modularity         10       3/10       3.0            only main() defined
+logical            10       0/6        0.0            0 of 6 edge cases passed
+complexity         10       0/10       0.0            O(1) confirmed
+memory_safety      10       0/10       0.0            Sanitizer issue detected
+readability        10       7/10       7.0            Single-letter variable names
+originality        10       0/10       0.0            FLAGGED similarity 0.89
+--- Suggestions to raise the grade ---
+- Handle overflow explicitly with a wider integer type (e.g. long long) or bounds checking before addition.
+- Add function prototypes and declarations; avoid monolithic single-block code.
+- Extract helper logic (e.g. int add(int a, int b) or long long add(...)) into its own function; call it from main.
+- Rename single-letter variable names (a, b) to descriptive names (e.g. num1, num2 or lhs, rhs); add descriptive comments.
+
+--- Usefulness & limitations of this evaluation ---
+Useful for:
+1. Coding-interview and hiring screens
+   Example: A company runs 500 candidate submissions for an 'add two integers safely' task. The agent ranks them by correctness, edge-case handling and memory safety, and gives an explainable per-metric score.
+   Benefit: Fast first-round filtering where every rejection can be justified metric by metric.
+2. Plagiarism and LLM-copy triage for instructors
+   Example: Two submissions reach a similarity of 0.93 against the 0.85 threshold, so the agent raises a flag in the report. The instructor reviews only those pairs instead of all 300.
+   Benefit: Saves review time by narrowing manual checking to suspicious cases.
+3. Automated continuous formative feedback in programming labs
+   Example: Students submit code iteratively during a weekly lab; the agent instantly returns failing counter-examples, memory safety alerts (ASan), and style advice before final grading.
+   Benefit: Accelerates student learning loops and drastically reduces TA grading workload.
+4. Security and sanity gating for low-level systems codebases
+   Example: A CI/CD pipeline runs the agent on PR submissions to verify no undefined behavior (signed integer overflow, buffer overflows) or infinite loops enter the codebase.
+   Benefit: Enforces strict memory safety and C standards compliance in automated deployment.
+
+Limits of this report:
+1. Tests cannot prove correctness (Incomplete input space)
+   Example: A submission passes all 10 hidden tests but fails when input has extra leading whitespace or an unconventional newline format not represented in the suite. The agent mistakenly awards 10/10 correctness.
+   Fix: The agent should create adversarial LLM test inputs and compare student answers with a verified reference oracle.
+2. Static structure and modularity heuristics can be easily gamed
+   Example: A student inflates modularity from 3/10 to 10/10 by creating trivial unused helper functions (e.g., 'int unused() { return 0; }') without improving the true architecture of main().
+   Fix: Use abstract syntax tree (AST) call-graph analysis to verify helper functions are actively called and contribute to computation.
+3. Empirical complexity estimation is susceptible to OS scheduling noise
+   Example: Under heavy CPU load or virtualization jitter on a shared server, an O(1) constant-time program exhibits runtime variance across test sizes, causing the estimator to falsely flag it as O(N).
+   Fix: Measure hardware performance counters (such as CPU instruction retirement via perf or cachegrind) instead of wall-clock time.
+4. Plagiarism false positives on short, constrained problems
+   Example: For simple problems like 'add two integers', all correct solutions naturally share 85-95% structural and token similarity, triggering false plagiarism alarms on innocent submissions.
+   Fix: Combine token diffing with Control Flow Graph (CFG) isomorphic subgraph matching and ignore standard boilerplate.

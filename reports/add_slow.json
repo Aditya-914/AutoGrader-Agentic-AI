@@ -1,0 +1,264 @@
+{
+  "submission": "add_slow.c",
+  "rules_hash": "sha256:a8d6b85121314abdc344053744046a9acbe956622b4a2e051066b7ede7ce4b07",
+  "grade": 70.0,
+  "first_pass": {
+    "compiled": true,
+    "smoke_ok": true,
+    "suspected_infinite_loop": false,
+    "static_sanity_ok": true,
+    "static_sanity_details": {
+      "has_main": true,
+      "has_reader": true,
+      "has_writer": true,
+      "has_return_in_main": true
+    },
+    "compile_warnings": [],
+    "smoke_stdout": "12"
+  },
+  "metrics": [
+    {
+      "name": "correctness",
+      "analyzer": "io_tests",
+      "score": 1.0,
+      "weight": 0.2,
+      "contribution": 20.0,
+      "evidence": {
+        "generated_by_llm": true,
+        "tests_passed": 10,
+        "tests_total": 10,
+        "failing": []
+      },
+      "feedback": "All 10/10 tests pass."
+    },
+    {
+      "name": "syntax",
+      "analyzer": "compiler_warnings",
+      "score": 1.0,
+      "weight": 0.1,
+      "contribution": 10.0,
+      "evidence": {
+        "warning_count": 0,
+        "warnings": []
+      },
+      "feedback": "Clean compile with 0 warnings."
+    },
+    {
+      "name": "structure",
+      "analyzer": "static_analysis",
+      "score": 0.6,
+      "weight": 0.1,
+      "contribution": 6.0,
+      "evidence": {
+        "functions": [
+          {
+            "name": "main",
+            "cyclomatic_complexity": 5,
+            "nloc": 18
+          }
+        ],
+        "cppcheck_issues": [],
+        "has_prototypes": false
+      },
+      "feedback": "no headers/prototypes, single-block code"
+    },
+    {
+      "name": "modularity",
+      "analyzer": "function_split",
+      "score": 0.3,
+      "weight": 0.1,
+      "contribution": 3.0,
+      "evidence": {
+        "functions_defined": 1,
+        "function_names": [
+          "main"
+        ],
+        "expected_min": 2
+      },
+      "feedback": "Only main() is defined. Extract a helper function (e.g., add(long long, long long))."
+    },
+    {
+      "name": "logical",
+      "analyzer": "edge_case_runner",
+      "score": 1.0,
+      "weight": 0.1,
+      "contribution": 10.0,
+      "evidence": {
+        "generated_by_llm": true,
+        "student_defense_loop_active": true,
+        "cases_tested": 6,
+        "cases_passed": 6,
+        "defended_against_llm": [
+          {
+            "category": "negatives",
+            "input": "-100 -200",
+            "student_output": "-300",
+            "oracle_expected": "-300",
+            "claimed_explanation": "Both operands negative; tests signed arithmetic.",
+            "defense_note": "Student correctly produced '-300', matching mathematical oracle. Counter-case dismissed."
+          },
+          {
+            "category": "negatives",
+            "input": "-1 1",
+            "student_output": "0",
+            "oracle_expected": "0",
+            "claimed_explanation": "Negative + positive yielding zero.",
+            "defense_note": "Student correctly produced '0', matching mathematical oracle. Counter-case dismissed."
+          },
+          {
+            "category": "zero",
+            "input": "0 0",
+            "student_output": "0",
+            "oracle_expected": "0",
+            "claimed_explanation": "Both operands zero.",
+            "defense_note": "Student correctly produced '0', matching mathematical oracle. Counter-case dismissed."
+          },
+          {
+            "category": "int_overflow",
+            "input": "2147483647 1",
+            "student_output": "2147483648",
+            "oracle_expected": "2147483648",
+            "claimed_explanation": "INT_MAX + 1 overflows 32-bit signed int. Use long long.",
+            "defense_note": "Student correctly produced '2147483648', matching mathematical oracle. Counter-case dismissed."
+          },
+          {
+            "category": "int_overflow",
+            "input": "-2147483648 -1",
+            "student_output": "-2147483649",
+            "oracle_expected": "-2147483649",
+            "claimed_explanation": "INT_MIN - 1 underflows 32-bit signed int.",
+            "defense_note": "Student correctly produced '-2147483649', matching mathematical oracle. Counter-case dismissed."
+          },
+          {
+            "category": "whitespace_formatting",
+            "input": "7   5",
+            "student_output": "12",
+            "oracle_expected": "12",
+            "claimed_explanation": "Extra whitespace around and between numbers. scanf %d handles this.",
+            "defense_note": "Student correctly produced '12', matching mathematical oracle. Counter-case dismissed."
+          }
+        ],
+        "counter_test_cases": [],
+        "self_correction_rounds": 1
+      },
+      "feedback": "Student Defense Loop: Defended against 6 false counter-case(s) \u2014 All 6/6 adversarial cases defended successfully."
+    },
+    {
+      "name": "complexity",
+      "analyzer": "complexity_estimator",
+      "score": 0.4,
+      "weight": 0.1,
+      "contribution": 4.0,
+      "evidence": {
+        "required_complexity": "O(1)",
+        "estimated_time_complexity": "O(N) or higher",
+        "estimated_space_complexity": "O(1)",
+        "sizes": [
+          1,
+          10,
+          100
+        ],
+        "timings_ms": [
+          6.767,
+          5.196,
+          5.555
+        ],
+        "loops_detected": 2
+      },
+      "feedback": "Time: O(N) or higher, Space: O(1) confirmed across sizes [1, 10, 100]."
+    },
+    {
+      "name": "memory_safety",
+      "analyzer": "sanitizer_run",
+      "score": 0.0,
+      "weight": 0.1,
+      "contribution": 0.0,
+      "evidence": {
+        "compile_error": "/usr/bin/ld.bfd: cannot find /usr/lib64/libasan.so.8.0.0: No such file or directory\ncollect2: error: ld returned 1 exit status\n"
+      },
+      "feedback": "Failed to compile with AddressSanitizer/UBSan."
+    },
+    {
+      "name": "readability",
+      "analyzer": "llm_review",
+      "score": 0.7,
+      "weight": 0.1,
+      "contribution": 7.0,
+      "evidence": {
+        "model": "llama3.1 (deterministic-fallback)",
+        "temperature": 0.0,
+        "seed": 42,
+        "raw_response": "{\"score\": 7, \"reasons\": [\"Single-letter variable names\"]}"
+      },
+      "feedback": "Single-letter variable names"
+    },
+    {
+      "name": "originality",
+      "analyzer": "similarity_flag",
+      "score": 1.0,
+      "weight": 0.1,
+      "contribution": 10.0,
+      "evidence": {
+        "max_similarity": 0.56,
+        "most_similar_file": "infinite_loop.c",
+        "threshold": 0.85,
+        "flagged": false
+      },
+      "feedback": "Max similarity 0.56 with 'infinite_loop.c', not flagged (threshold 0.85)."
+    }
+  ],
+  "flags": [],
+  "graded_at": "2026-11-04T19:29:28.913548+00:00",
+  "total_time_s": 0.13,
+  "usefulness_limitations": {
+    "usefulness": [
+      {
+        "use_case": "Coding-interview and hiring screens",
+        "example": "A company runs 500 candidate submissions for an 'add two integers safely' task. The agent ranks them by correctness, edge-case handling and memory safety, and gives an explainable per-metric score.",
+        "benefit": "Fast first-round filtering where every rejection can be justified metric by metric."
+      },
+      {
+        "use_case": "Plagiarism and LLM-copy triage for instructors",
+        "example": "Two submissions reach a similarity of 0.93 against the 0.85 threshold, so the agent raises a flag in the report. The instructor reviews only those pairs instead of all 300.",
+        "benefit": "Saves review time by narrowing manual checking to suspicious cases."
+      },
+      {
+        "use_case": "Automated continuous formative feedback in programming labs",
+        "example": "Students submit code iteratively during a weekly lab; the agent instantly returns failing counter-examples, memory safety alerts (ASan), and style advice before final grading.",
+        "benefit": "Accelerates student learning loops and drastically reduces TA grading workload."
+      },
+      {
+        "use_case": "Security and sanity gating for low-level systems codebases",
+        "example": "A CI/CD pipeline runs the agent on PR submissions to verify no undefined behavior (signed integer overflow, buffer overflows) or infinite loops enter the codebase.",
+        "benefit": "Enforces strict memory safety and C standards compliance in automated deployment."
+      }
+    ],
+    "limitations": [
+      {
+        "limitation": "Tests cannot prove correctness (Incomplete input space)",
+        "example": "A submission passes all 10 hidden tests but fails when input has extra leading whitespace or an unconventional newline format not represented in the suite. The agent mistakenly awards 10/10 correctness.",
+        "mitigation": "The agent should create adversarial LLM test inputs and compare student answers with a verified reference oracle."
+      },
+      {
+        "limitation": "Static structure and modularity heuristics can be easily gamed",
+        "example": "A student inflates modularity from 3/10 to 10/10 by creating trivial unused helper functions (e.g., 'int unused() { return 0; }') without improving the true architecture of main().",
+        "mitigation": "Use abstract syntax tree (AST) call-graph analysis to verify helper functions are actively called and contribute to computation."
+      },
+      {
+        "limitation": "Empirical complexity estimation is susceptible to OS scheduling noise",
+        "example": "Under heavy CPU load or virtualization jitter on a shared server, an O(1) constant-time program exhibits runtime variance across test sizes, causing the estimator to falsely flag it as O(N).",
+        "mitigation": "Measure hardware performance counters (such as CPU instruction retirement via perf or cachegrind) instead of wall-clock time."
+      },
+      {
+        "limitation": "Plagiarism false positives on short, constrained problems",
+        "example": "For simple problems like 'add two integers', all correct solutions naturally share 85-95% structural and token similarity, triggering false plagiarism alarms on innocent submissions.",
+        "mitigation": "Combine token diffing with Control Flow Graph (CFG) isomorphic subgraph matching and ignore standard boilerplate."
+      }
+    ]
+  },
+  "tool_versions": {
+    "gcc": "16.2.1",
+    "cppcheck": "unknown",
+    "lizard": "1.24.3"
+  }
+}

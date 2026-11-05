@@ -1,0 +1,107 @@
+{
+  "problem": "rat_maze",
+  "problem_description": "Consider a rat placed at (0, 0) in a square matrix of order N * N. It has to reach the destination at (N - 1, N - 1). Find all possible paths that the rat can take to reach from source to destination. The directions in which the rat can move are 'U'(up), 'D'(down), 'L' (left), and 'R' (right). Value 0 at a cell in the matrix represents that it is blocked and rat cannot move to it while value 1 at a cell in the matrix represents that rat can travel through it. Return the list of paths in lexicographically increasing order.",
+  "time_limit_s": 5,
+  "memory_limit_mb": 100,
+  "sample_input": "4 4 1 0 0 0 1 1 0 1 1 1 0 0 0 1 1 1",
+  "sample_output": "DDRDRR DRDDRR",
+  "llm_config": {
+    "model": "llama3.1",
+    "temperature": 0,
+    "seed": 42
+  },
+  "metrics": [
+    {
+      "name": "correctness",
+      "analyzer": "io_tests",
+      "weight": 0.3,
+      "params": {
+        "testset_dir": "tests/rat_maze/",
+        "auto_generate": true,
+        "num_tests": 10
+      }
+    },
+    {
+      "name": "syntax",
+      "analyzer": "compiler_warnings",
+      "weight": 0.15,
+      "params": {
+        "flags": "-Wall -Wextra -Werror -std=c11"
+      }
+    },
+    {
+      "name": "structure",
+      "analyzer": "static_analysis",
+      "weight": 0.1,
+      "params": {
+        "max_cyclomatic": 8,
+        "max_function_length": 40
+      }
+    },
+    {
+      "name": "modularity",
+      "analyzer": "function_split",
+      "weight": 0.1,
+      "params": {
+        "expect_helpers": true,
+        "min_functions": 2
+      }
+    },
+    {
+      "name": "logical",
+      "analyzer": "edge_case_runner",
+      "weight": 0.1,
+      "params": {
+        "auto_generate": true,
+        "cases": [
+          "start_blocked",
+          "dest_blocked",
+          "no_path_wall",
+          "all_blocked",
+          "full_grid_open"
+        ]
+      }
+    },
+    {
+      "name": "complexity",
+      "analyzer": "complexity_estimator",
+      "weight": 0.1,
+      "params": {
+        "required": "O(N^2)",
+        "sizes": [
+          1,
+          10,
+          100
+        ],
+        "required_space": "O(1)"
+      }
+    },
+    {
+      "name": "memory_safety",
+      "analyzer": "sanitizer_run",
+      "weight": 0.05,
+      "params": {
+        "flags": "-fsanitize=address,undefined"
+      }
+    },
+    {
+      "name": "readability",
+      "analyzer": "llm_review",
+      "weight": 0.05,
+      "params": {
+        "model": "llama3.1",
+        "temperature": 0,
+        "seed": 42
+      }
+    },
+    {
+      "name": "originality",
+      "analyzer": "similarity_flag",
+      "weight": 0.05,
+      "params": {
+        "corpus_dir": "corpus/",
+        "flag_threshold": 0.85
+      }
+    }
+  ]
+}
